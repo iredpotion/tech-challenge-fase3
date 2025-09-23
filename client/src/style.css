@@ -1,0 +1,165 @@
+/* Reset simples */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+body {
+  background-color: #F5F5F5; /* cinza suave */
+  color: #333;
+  line-height: 1.6;
+}
+
+/* Header */
+header {
+  background: #A7C7E7; /* azul pastel */
+  color: #333;
+  padding: 15px 20px;
+  border-bottom: 2px solid #6A9AC4;
+}
+
+header nav ul {
+  display: flex;
+  list-style: none;
+  justify-content: center;
+  gap: 20px;
+}
+
+header nav ul li a {
+  color: #333;
+  text-decoration: none;
+  font-weight: bold;
+  transition: 0.3s;
+}
+
+header nav ul li a:hover {
+  color: #6A9AC4; /* azul mais escuro */
+}
+
+/* Footer */
+footer {
+  background: #A7C7E7;
+  color: #333;
+  text-align: center;
+  padding: 10px;
+  margin-top: 30px;
+  border-top: 2px solid #6A9AC4;
+}
+
+/* Main container */
+main {
+  padding: 20px;
+  min-height: 70vh;
+}
+
+/* Lista de posts */
+ul {
+  list-style: none;
+  padding: 0;
+}
+
+ul li {
+  background: #FFFFFF;
+  margin-bottom: 15px;
+  padding: 15px;
+  border-radius: 10px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+  transition: 0.3s;
+}
+
+ul li:hover {
+  background: #FFF3B0; /* amarelo pastel */
+}
+
+ul li h2 {
+  margin-bottom: 5px;
+  color: #6A9AC4;
+}
+
+/* Campo de busca */
+input[type="text"] {
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  margin-bottom: 20px;
+  width: 100%;
+  max-width: 400px;
+}
+
+/* Formulários */
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  max-width: 500px;
+  margin: 0 auto;
+  background: #FFFFFF;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
+
+form input, 
+form textarea {
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 1rem;
+}
+
+form textarea {
+  min-height: 100px;
+}
+
+form button {
+  padding: 10px;
+  border: none;
+  border-radius: 6px;
+  background: #A7C7E7;
+  color: #333;
+  font-size: 1rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+form button:hover {
+  background: #6A9AC4;
+  color: #fff;
+}
+
+/* Admin Page */
+button {
+  margin-left: 10px;
+  padding: 6px 12px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: 0.3s;
+}
+
+button:hover {
+  opacity: 0.9;
+}
+
+button:nth-of-type(1) {
+  background: #A7C7E7;
+  color: #333;
+}
+
+button:nth-of-type(1):hover {
+  background: #6A9AC4;
+  color: #fff;
+}
+
+button:nth-of-type(2) {
+  background: #E68A8A; /* vermelho pastel */
+  color: #fff;
+}
+
+button:nth-of-type(2):hover {
+  background: #cc4c4c;
+}
