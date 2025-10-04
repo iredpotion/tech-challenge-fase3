@@ -1,7 +1,10 @@
 export default function Footer() {
+  
+ const currentYear = new Date().getFullYear();
+
   return (
-    <footer style={{ padding: "1rem", background: "#f3f4f6", marginTop: "2rem", textAlign: "center" }}>
-      <p>© 2025 - Meu App Educacional</p>
+    <footer className="main-footer">
+      <p>&copy; {currentYear} Tech-Challenge Fase 3. Todos os direitos reservados a Pedro Toni, Pedro Henrique, Gustavo Partica, Anderson, Wesley.</p>
     </footer>
   );
 }

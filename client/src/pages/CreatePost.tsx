@@ -27,12 +27,29 @@ export default function NovoPost() {
     navigate("/posts");
   };
 
-  return (
-    <form onSubmit={handleCreatePost}>
+ return (
+    // Usa a classe 'container' para centralizar o conteúdo na tela
+    <div className="container">
       <h2>Novo Post</h2>
-      <input placeholder="Título" value={titulo} onChange={e => setTitulo(e.target.value)} />
-      <textarea placeholder="Descrição" value={descricao} onChange={e => setDescricao(e.target.value)} />
-      <button type="submit">Criar</button>
-    </form>
+      
+      {/* Usa a classe 'create-post-form' para estilizar como um cartão */}
+      <form onSubmit={handleCreatePost} className="create-post-form">
+        <input 
+          placeholder="Título" 
+          value={titulo} 
+          onChange={e => setTitulo(e.target.value)} 
+          required
+        />
+        <textarea 
+          placeholder="Descrição" 
+          value={descricao} 
+          onChange={e => setDescricao(e.target.value)} 
+          required
+        />
+        <button type="submit">
+          Criar
+        </button>
+      </form>
+    </div>
   );
 }

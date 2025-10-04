@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import api from "../services/api";
 import { Link } from "react-router-dom";
 
+
 interface Post {
   _id: string;
   titulo: string;
@@ -16,14 +17,6 @@ export default function Posts() {
   const [posts, setPosts] = useState<Post[]>([]);
   const [busca, setBusca] = useState("");
 
-  const formatarData = (dataString: string) => {    
-    if (!dataString || !dataString.includes('/')) {
-      return null;
-    }    
-    const partes = dataString.split('/');    
-    return `${partes[1]}/${partes[0]}/${partes[2]}`;
-  };
-
   useEffect(() => {
     api.get("/posts").then(res => {
       const ativos = res.data.filter((p: Post) => p.postAtivo === true);
@@ -37,16 +30,22 @@ export default function Posts() {
   );
 
   return (
-    <div>
+    <div className="post-container">
       <h2>Lista de Posts</h2>
       <input placeholder="Buscar posts..." value={busca} onChange={e => setBusca(e.target.value)} />
       {filtrados.map(post => (
-        <div key={post._id} style={{ marginBottom: "1rem" }}>
-          <span>{post.autor}</span>
-          <h3>{post.titulo}</h3>
-          <p>{post.descricao}</p>
-          <span>{new Date(formatarData(post.dataAtualizacao)!).toLocaleDateString()}</span>
-          <Link to={`/posts/${post._id}`}>Ver detalhes</Link>
+        <div className="post-card" key={post._id} >
+          <div className="post-header">
+            <span>{post.autor}</span>
+            <span>{post.dataCriacao}</span>
+          </div>
+          <h3 className="post-title">{post.titulo}</h3>
+          <div className="post-content-box">
+            {post.descricao}
+          </div>
+          <div className="post-link">
+          <Link to={`/posts/${post._id}`}>Ver mais...</Link>
+          </div>
         </div>
       ))}
     </div>

@@ -1,0 +1,711 @@
+/* ======================================================= */
+/* 0. VARIÁVEIS GLOBAIS (CUSTOM PROPERTIES) */
+/* ======================================================= */
+
+:root {
+  /* Cores Primárias */
+  --color-primary: #1e90ff; 
+  --color-primary-dark: #0056b3; 
+  --color-primary-light: #007bff; 
+  
+  /* Cores de Status e Ação */
+  --color-success: #28a745; 
+  --color-success-dark: #1e7e34; 
+  --color-danger: #dc3545; 
+  
+  /* Cores Neutras */
+  --color-text-dark: #333;
+  --color-text-medium: #555;
+  --color-text-light: #777;
+  --color-border: #ddd;
+  --color-border-light: #eee;
+  --color-bg-light: #fff;
+  --color-bg-card: #f9f9f9; 
+  --color-bg-post: #efefef; 
+  --color-bg-comment: #f5f5f5; 
+
+  /* Larguras */
+  --max-width-content: 800px;
+  --max-width-auth: 400px;
+}
+
+/* ======================================================= */
+/* 1. CONFIGURAÇÕES GLOBAIS E TIPOGRAFIA */
+/* ======================================================= */
+
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@500;700&family=Roboto:wght@400;500&display=swap');
+
+body {
+  font-family: 'Roboto', sans-serif; 
+  margin: 0;
+  padding: 0;
+  padding-bottom: 60px;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Poppins', sans-serif;
+  font-weight: 600; 
+}
+
+/* ======================================================= */
+/* 2. LAYOUT PRINCIPAL E CONTAINERS */
+/* ======================================================= */
+
+.container {
+  max-width: var(--max-width-content);
+  margin: 40px auto; 
+  padding: 0 20px;
+}
+
+.post-container { 
+  /* Ajuste para desktop: Centraliza o conteúdo da listagem sem margens laterais rígidas */
+  max-width: var(--max-width-content);
+  margin: 40px auto; 
+  padding: 0 20px;
+}
+
+.container h2,
+.post-container h2 {
+  font-size: 28px;
+  font-weight: normal;
+  margin-bottom: 20px;
+  color: var(--color-text-dark);
+}
+
+/* ======================================================= */
+/* 3. NAVEGAÇÃO E FOOTER */
+/* ======================================================= */
+
+.header { 
+  background: transparent;
+  padding: 16px 0; 
+  border-bottom: 1px solid var(--color-border-light);
+  font-family: 'Poppins', sans-serif;
+  position: relative;
+  /* Fluidez no header */
+  transition: background-color 0.3s ease, box-shadow 0.3s ease; 
+}
+
+.nav-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  max-width: 1200px; 
+  margin: 0 auto; 
+  padding: 0 10px; 
+}
+
+/* Esconde o menu hambúrguer por padrão */
+.menu-icon {
+    display: none;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    z-index: 1001; 
+}
+
+.menu-icon svg {
+    width: 24px;
+    height: 24px;
+    stroke: var(--color-text-dark);
+}
+
+.nav-links-group {
+  display: flex;
+  align-items: center;
+}
+
+.nav-left {
+  gap: 2rem;
+}
+
+.nav-right {
+  gap: 1rem;
+}
+
+/* Links de Navegação */
+.nav-link {
+  text-decoration: none;
+  color: var(--color-text-dark);
+  font-weight: 500;
+  transition: color 0.3s ease; 
+  padding: 5px 0;
+}
+
+.nav-link:hover {
+  color: var(--color-primary);
+  text-decoration: underline;
+  text-decoration-color: var(--color-primary);
+  text-underline-offset: 4px; 
+}
+
+.user-info {
+  color: var(--color-text-medium);
+  font-size: 14px;
+  font-style: italic;
+}
+
+/* Botão de Logout */
+.logout-button {
+  background: none;
+  border: none;
+  font-size: 0;
+  cursor: pointer;
+  transition: all 0.3s ease; 
+  padding: 0;
+  margin-left: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.logout-button svg {
+  width: 24px;
+  height: 24px;
+  stroke: var(--color-primary);
+  transition: stroke 0.3s ease; 
+}
+
+.logout-button:hover svg {
+  stroke: var(--color-primary-dark);
+  opacity: 1;
+}
+
+.main-footer {
+  background-color: #f8f8f8;
+  border-top: 1px solid var(--color-border-light);
+  padding: 20px 0;
+  text-align: center;
+  color: var(--color-text-light);
+  font-size: 14px;
+  font-style: italic;
+  width: 100%;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  z-index: 1000;
+}
+
+.main-footer p {
+  margin: 0;
+  padding: 0;
+}
+
+/* ======================================================= */
+/* 4. POSTS E ADMINISTRAÇÃO (LISTAGEM) */
+/* ======================================================= */
+
+.post-card { 
+  padding: 16px;
+  margin-bottom: 24px;
+  border-radius: 6px;
+  background-color: var(--color-bg-post); 
+  position: relative;
+  /* Fluidez no card */
+  transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94), 
+              box-shadow 0.4s ease, 
+              border-color 0.4s ease;
+}
+
+.post-card:hover {
+  transform: scale(1.03);
+  box-shadow: 0 0 18px rgba(0, 123, 255, 0.2);
+  border-color: var(--color-primary);
+}
+
+.post-header {
+  display: flex;
+  justify-content: space-between;
+  font-size: 14px; 
+  font-style: italic;
+  margin-bottom: 8px;
+}
+
+.post-title {
+  text-align: center; 
+  color: rgb(0, 47, 255);
+  font-style: italic;
+  margin-bottom: 16px;
+}
+
+.post-content-box {
+  text-align: center;
+  padding: 12px;
+  margin: 0 8px 12px 8px; 
+  line-height: 1.6;
+}
+
+.post-link {
+  text-align: right;
+  display: block;
+  color: var(--color-primary);
+  font-size: 14px; 
+  text-decoration: none;
+  transition: all 0.3s ease;
+}
+
+.post-link:hover {
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.post-card a {
+  text-decoration: none;
+  color: var(--color-primary-light);
+  font-weight: bold;
+  transition: all 0.3s ease;
+}
+
+.post-card a:hover {
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  color: var(--color-primary);
+}
+
+.admin-post-card {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 20px;
+  margin-bottom: 15px; 
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  background-color: var(--color-bg-light); 
+  transition: box-shadow 0.3s ease;
+}
+
+.admin-post-card:hover {
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.admin-post-card h3 {
+  font-size: 20px;
+  font-weight: bold;
+  color: var(--color-primary-light);
+  margin: 0;
+}
+
+.admin-post-card p {
+  margin: 5px 0;
+  color: var(--color-text-medium);
+}
+
+.admin-actions {
+  display: flex;
+  gap: 15px;
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px dashed var(--color-border-light);
+}
+
+.admin-actions a {
+  text-decoration: none;
+  color: var(--color-success); 
+  font-weight: bold;
+  transition: all 0.3s ease;
+}
+
+.admin-actions button {
+  background-color: transparent;
+  border: none;
+  color: var(--color-danger); 
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: bold;
+  padding: 0;
+  transition: opacity 0.3s ease;
+}
+
+.admin-post-card h3 span {
+  font-size: 18px;
+  font-weight: bold;
+  margin-left: 10px;
+}
+
+.status-ativo {
+  color: var(--color-success);
+}
+
+.status-inativo {
+  color: var(--color-danger);
+}
+
+/* ======================================================= */
+/* 5. FORMULÁRIOS DE AUTENTICAÇÃO E CRIAÇÃO */
+/* ======================================================= */
+
+.post-container input {
+  width: 100%;
+  max-width: 400px;
+  padding: 10px 14px;
+  border: 1px solid var(--color-border);
+  border-radius: 25px;
+  font-size: 15px;
+  outline: none;
+  transition: all 0.25s ease;
+  background-color: #fafafa;
+  font-family: 'Roboto', sans-serif;
+  color: var(--color-text-dark);
+  margin-bottom: 20px;
+  box-shadow: 0 0 0 rgba(0,0,0,0);
+}
+
+.post-container input:focus {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 6px rgba(30, 144, 255, 0.3);
+  background-color: var(--color-bg-light);
+}
+
+.post-container input::placeholder {
+  color: #999;
+  font-style: italic;
+}
+
+.create-post-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding: 30px;
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  background-color: var(--color-bg-card);
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+.create-post-form input,
+.create-post-form textarea,
+.create-post-form select {
+  padding: 12px;
+  border: 1px solid var(--color-border);
+  border-radius: 4px;
+  font-size: 16px;
+  font-family: inherit;
+  width: 100%;
+  box-sizing: border-box; 
+}
+
+.create-post-form textarea {
+  min-height: 150px;
+  resize: vertical;
+}
+
+.create-post-form button[type="submit"] {
+  padding: 12px 20px;
+  background-color: var(--color-primary-light);
+  color: var(--color-bg-light);
+  border: none;
+  border-radius: 4px;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  width: auto;
+  align-self: flex-start; 
+}
+
+.create-post-form button[type="submit"]:hover {
+  background-color: var(--color-primary-dark);
+}
+
+.create-post-form label {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 16px;
+  color: var(--color-text-medium);
+  margin-top: 10px;
+}
+
+.create-post-form label input[type="checkbox"] {
+  width: auto; 
+  height: auto;
+  margin: 0;
+  padding: 0;
+  border: 1px solid var(--color-border);
+  border-radius: 4px;
+}
+
+.login-form-card,
+.register-form-card {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  max-width: var(--max-width-auth); 
+  margin: 80px auto 0;
+  padding: 30px;
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  background-color: var(--color-bg-card);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.login-form-card h2,
+.register-form-card h2 {
+  font-size: 28px;
+  font-weight: bold;
+  color: var(--color-text-dark);
+  margin-bottom: 5px;
+  text-align: center;
+}
+
+.login-form-card input,
+.register-form-card input,
+.register-form-card select {
+  padding: 12px;
+  border: 1px solid var(--color-border);
+  border-radius: 4px;
+  font-size: 16px;
+  font-family: inherit;
+  width: 100%;
+  box-sizing: border-box;
+  background-color: var(--color-bg-light);
+}
+
+.register-form-card select {
+  background-color: var(--color-bg-light);
+  color: var(--color-text-dark); 
+}
+
+.login-form-card button[type="submit"],
+.register-form-card button[type="submit"] {
+  padding: 12px;
+  background-color: var(--color-primary-light);
+  color: var(--color-bg-light);
+  border: none;
+  border-radius: 4px;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  margin-top: 10px;
+}
+
+.login-form-card button[type="submit"]:hover,
+.register-form-card button[type="submit"]:hover {
+  background-color: var(--color-primary-dark);
+}
+
+.login-form-card p {
+  text-align: center;
+  font-size: 14px;
+  color: var(--color-text-medium);
+  margin-top: 10px;
+}
+
+.login-form-card p a {
+  color: var(--color-primary-light);
+  text-decoration: none;
+  font-weight: bold;
+}
+
+.login-form-card p a:hover {
+  text-decoration: underline;
+}
+
+/* ======================================================= */
+/* 6. DETALHES E COMENTÁRIOS */
+/* ======================================================= */
+
+.post-detail-content {
+  padding: 30px 0;
+  border-bottom: 1px solid var(--color-border-light);
+  margin-bottom: 30px;
+}
+
+.post-detail-content h2 {
+  font-size: 32px;
+  font-weight: bold;
+  color: var(--color-primary-light);
+  margin-bottom: 10px;
+}
+
+.post-detail-content .post-meta {
+  font-size: 14px;
+  color: var(--color-text-light);
+  font-style: italic;
+  margin-bottom: 20px;
+}
+
+.post-detail-content p {
+  font-size: 18px;
+  line-height: 1.6;
+  color: var(--color-text-dark);
+}
+
+.comments-section h3 {
+  font-size: 24px;
+  font-weight: 500;
+  color: var(--color-text-dark);
+  margin-bottom: 20px;
+}
+
+.comments-list {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  margin-bottom: 30px;
+}
+
+.comment-item {
+  padding: 15px;
+  background-color: var(--color-bg-comment);
+  border-radius: 4px;
+}
+
+.comment-item strong {
+  font-weight: bold;
+  color: var(--color-primary-light);
+  margin-right: 5px;
+}
+
+.comment-item small {
+  display: block;
+  font-size: 12px;
+  color: #999;
+  margin-top: 5px;
+}
+
+.comment-form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 20px;
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  background-color: var(--color-bg-light);
+}
+
+.comment-form textarea {
+  padding: 10px;
+  border: 1px solid var(--color-border);
+  border-radius: 4px;
+  min-height: 80px;
+  resize: vertical;
+  font-family: inherit;
+  font-size: 16px;
+}
+
+.comment-form button[type="submit"] {
+  padding: 10px 15px;
+  background-color: var(--color-success);
+  color: var(--color-bg-light);
+  border: none;
+  border-radius: 4px;
+  font-weight: bold;
+  cursor: pointer;
+  align-self: flex-start;
+}
+
+.comment-form button[type="submit"]:hover {
+  background-color: var(--color-success-dark);
+}
+
+/* ======================================================= */
+/* 7. MEDIA QUERIES (RESPONSIVIDADE) */
+/* ======================================================= */
+
+@media (max-width: 991px) {
+  body {
+      font-size: 15px;
+  }
+  .container {
+    padding: 0 15px;
+    margin: 30px auto;
+  }
+  
+  .post-container {
+    /* Ajuste para telas grandes que não são PC */
+    margin: 0 30px; 
+  }
+
+  .nav-left {
+    gap: 1.5rem;
+  }
+  
+  .container h2,
+  .post-container h2 {
+    font-size: 26px;
+  }
+  
+  .post-detail-content h2 {
+    font-size: 28px;
+  }
+
+  .comments-section h3 {
+      font-size: 20px;
+  }
+  
+  .post-card:hover {
+    transform: none;
+  }
+}
+
+@media (max-width: 575px) {
+  body {
+    padding-bottom: 50px;
+    font-size: 14px;
+  }
+
+  /* Aplica margens mínimas para usar 100% da tela do celular */
+  .container {
+    padding: 0 10px;
+  }
+  .post-container {
+    margin: 0 5px; 
+    padding: 0 5px;
+  }
+  
+  /* ESCONDE LINKS PADRÃO E MOSTRA ÍCONE */
+  .nav-left {
+      display: none; 
+      position: absolute; 
+      top: 55px; 
+      left: 0;
+      width: 100%;
+      flex-direction: column; 
+      background-color: var(--color-bg-light); 
+      border-bottom: 1px solid var(--color-border);
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+      z-index: 1000;
+      padding: 10px 0;
+  }
+  
+  .nav-left.menu-open {
+      display: flex;      
+  }
+  
+  .nav-left .nav-link {
+    margin-left: 10px;
+    padding: 10px 10px;
+    width: 100%;
+    color: var(--color-text-dark);
+  }
+
+  .menu-icon {
+      display: block; 
+      order: -1; 
+  }
+
+  .nav-content {
+      flex-wrap: wrap;
+      align-items: flex-start;
+  }
+  
+  .nav-right {
+    margin-left: auto;
+    align-self: flex-start;
+    gap: 0.8rem;
+  }
+  
+  .login-form-card,
+  .register-form-card {
+    max-width: 95%;
+    margin: 20px auto;
+    padding: 15px;
+  }
+  
+  .post-detail-content h2 {
+    font-size: 24px;
+  }
+}

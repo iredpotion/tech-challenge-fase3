@@ -28,10 +28,23 @@ export default function Login() {
   };
 
   return (
-    <form onSubmit={handleLogin}>
+    // Aplica o estilo de cartão e centralização aqui
+    <form onSubmit={handleLogin} className="login-form-card">
       <h2>Login</h2>
-      <input placeholder="Email" value={email} onChange={e => setEmail(e.target.value)} />
-      <input placeholder="Senha" type="password" value={senha} onChange={e => setSenha(e.target.value)} />
+      <input 
+        placeholder="Email" 
+        value={email} 
+        onChange={e => setEmail(e.target.value)} 
+        type="email" 
+        required
+      />
+      <input 
+        placeholder="Senha" 
+        type="password" 
+        value={senha} 
+        onChange={e => setSenha(e.target.value)} 
+        required
+      />
       <button type="submit">Entrar</button>
       <p>
         Ainda não tem conta? <Link to="/registrar">Cadastre-se aqui</Link>

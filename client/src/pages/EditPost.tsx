@@ -22,18 +22,43 @@ export default function EditarPost() {
     await api.put(`/posts/${id}`, { titulo, descricao, postAtivo });
     alert("Post atualizado!");
     navigate("/admin");
+    console.log("Post atualizado:", { titulo, descricao, postAtivo });
   };
 
   return (
-    <form onSubmit={handleUpdate}>
+    // Reutiliza a classe 'container' para centralizar o conteúdo na tela
+    <div className="container">
       <h2>Editar Post</h2>
-      <input value={titulo} onChange={e => setTitulo(e.target.value)} />
-      <textarea value={descricao} onChange={e => setDescricao(e.target.value)} />
-      <label>
-        Ativo:
-        <input type="checkbox" checked={postAtivo} onChange={e => setPostAtivo(e.target.checked)} />
-      </label>
-      <button type="submit">Salvar</button>
-    </form>
+
+      {/* Reutiliza a classe 'create-post-form' para estilizar como um cartão */}
+      <form onSubmit={handleUpdate} className="create-post-form">
+        <input
+          type="text"
+          value={titulo}
+          onChange={e => setTitulo(e.target.value)}
+          placeholder="Título"
+          required
+        />
+        <textarea
+          value={descricao}
+          onChange={e => setDescricao(e.target.value)}
+          placeholder="Descrição"
+          required
+        />
+
+        <label>
+          Ativo:
+          <input
+            type="checkbox"
+            checked={postAtivo}
+            onChange={e => setPostAtivo(e.target.checked)}
+          />
+        </label>
+
+        <button type="submit">
+          Salvar
+        </button>
+      </form>
+    </div>
   );
 }

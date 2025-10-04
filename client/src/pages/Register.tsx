@@ -21,12 +21,33 @@ export default function Registrar() {
   };
 
   return (
-    <form onSubmit={handleRegister}>
+    <form onSubmit={handleRegister} className="register-form-card">
       <h2>Registrar</h2>
-      <input placeholder="Nome" value={nome} onChange={e => setNome(e.target.value)} />
-      <input placeholder="Email" value={email} onChange={e => setEmail(e.target.value)} />
-      <input placeholder="Senha" type="password" value={senha} onChange={e => setSenha(e.target.value)} />
-      <select value={cargo} onChange={e => setCargo(e.target.value)}>
+      <input 
+        placeholder="Nome" 
+        value={nome} 
+        onChange={e => setNome(e.target.value)} 
+        required
+      />
+      <input 
+        placeholder="Email" 
+        value={email} 
+        onChange={e => setEmail(e.target.value)} 
+        type="email" 
+        required
+      />
+      <input 
+        placeholder="Senha" 
+        type="password" 
+        value={senha} 
+        onChange={e => setSenha(e.target.value)} 
+        required
+      />
+      <select 
+        value={cargo} 
+        onChange={e => setCargo(e.target.value)}
+        required
+      >
         <option value="aluno">Aluno</option>
         <option value="professor">Professor</option>
       </select>

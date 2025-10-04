@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import api from "../services/api";
-import { useAuth } from "../context/AuthContext"; // Importa o hook de autenticação
+import { useAuth } from "../context/AuthContext";
 
 interface Post {
   _id: string;
@@ -17,63 +17,113 @@ interface Comentario {
   data: string;
 }
 
+// Função utilitária para formatar a data (mantendo o código limpo)
+const formatDate = (dateString: string) => {
+  if (!dateString) return "Data Desconhecida";
+  return new Date(dateString).toLocaleDateString('pt-BR', {
+    day: '2-digit',
+    month: 'long',
+    year: 'numeric',    
+  });
+};
+
 export default function PostDetalhe() {
   const { id } = useParams();
   const [post, setPost] = useState<Post | null>(null);
   const [comentarios, setComentarios] = useState<Comentario[]>([]);
   const [novoComentario, setNovoComentario] = useState("");
-  const { user } = useAuth(); // Acessa o usuário logado
+  const { user } = useAuth();
 
   useEffect(() => {
+    // Carrega o post
     api.get(`/posts/${id}`).then(res => setPost(res.data));
-    api.get(`/posts/${id}/comentarios`).then(res => setComentarios(res.data)); // precisa existir no backend
+    
+    // Carrega os comentários (catch corrigido para evitar erro de variável não utilizada)
+    api.get(`/posts/${id}/comentarios`).then(res => setComentarios(res.data)).catch(() => console.log("Não foi possível carregar comentários."));
   }, [id]);
 
   const adicionarComentario = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    // Pega o nome do usuário do contexto de autenticação.
-    // O operador '?' garante que a aplicação não quebre se o usuário não estiver logado.
-    const usuario = user?.nome || "Anônimo"; 
-    
-    // Se o usuário não estiver logado, não permita o comentário
-    if (!user) {
-        alert("Você precisa estar logado para comentar.");
+    // Verifica se o usuário está logado e se o campo não está vazio
+    if (!user || !user.nome || !novoComentario.trim()) {
+        alert("Você precisa estar logado e digitar um comentário válido.");
         return;
     }
     
-    const comentario = { usuario, texto: novoComentario };
-    await api.post(`/posts/${id}/comentarios`, comentario);
-    setComentarios([...comentarios, { ...comentario, data: new Date().toISOString() }]);
-    setNovoComentario("");
+    const usuario = user.nome; 
+    
+    try {
+        const comentarioPayload = { usuario, texto: novoComentario };
+        // Envia o comentário. Supondo que a API retorne o objeto completo, incluindo a data.
+        const res = await api.post(`/posts/${id}/comentarios`, comentarioPayload); 
+        
+        // Adiciona o novo comentário ao estado
+        setComentarios([...comentarios, res.data || {...comentarioPayload, data: new Date().toISOString()}]);
+        setNovoComentario("");
+        
+    } catch {
+        // Catch limpo, sem declarar a variável de erro
+        alert("Erro ao enviar comentário.");
+    }
   };
 
-  if (!post) return <p>Carregando...</p>;
+  if (!post) return <div className="container">Carregando...</div>;
 
   return (
-    <div>
-      <h2>{post.titulo}</h2>
-      <p>{post.descricao}</p>
-      <p><strong>Autor:</strong> {post.autor}</p>
-      <hr />
-      <h3>Comentários</h3>
-      {comentarios.map((c, i) => (
-        <p key={i}><strong>{c.usuario}</strong>: {c.texto}</p>
-      ))}
-      {/* Se o usuário estiver logado, exibe o formulário de comentário */}
-      {user ? (
-        <form onSubmit={adicionarComentario}>
-          <textarea
-            placeholder="Escreva um comentário..."
-            value={novoComentario}
-            onChange={e => setNovoComentario(e.target.value)}
-          />
-          <button type="submit">Comentar</button>
-        </form>
-      ) : (
-        // Se não estiver logado, exibe uma mensagem
-        <p>Você precisa estar logado para comentar.</p>
-      )}
+    // Centraliza o conteúdo da página
+    <div className="container">
+      
+      {/* SEÇÃO PRINCIPAL DO POST */}
+      <div className="post-detail-content">
+        <h2>{post.titulo}</h2>
+        
+        {/* Exibe o autor e a data formatada */}
+        <p className="post-meta">
+          Por {post.autor} em {formatDate(post.dataCriacao)}
+        </p>
+        
+        <p>{post.descricao}</p>
+      </div>
+
+      {/* SEÇÃO DE COMENTÁRIOS */}
+      <div className="comments-section">
+        <h3>Comentários ({comentarios.length})</h3>
+        
+        {/* Lista de Comentários Existentes */}
+        <div className="comments-list">
+            {comentarios.length > 0 ? (
+                comentarios.map((c, i) => (
+                    <div key={i} className="comment-item">
+                        <strong>{c.usuario}</strong>
+                        <p>{c.texto}</p>
+                        <small>Publicado em: {formatDate(c.data)}</small>
+                    </div>
+                ))
+            ) : (
+                <p>Seja o primeiro a comentar!</p>
+            )}
+        </div>
+        
+        {/* Formulário de Novo Comentário */}
+        {user ? (
+          <form onSubmit={adicionarComentario} className="comment-form">
+            <h4>Deixe seu comentário como {user.nome}</h4>
+            <textarea
+              placeholder="Escreva seu comentário aqui..."
+              value={novoComentario}
+              onChange={e => setNovoComentario(e.target.value)}
+              required
+            />
+            <button type="submit">Comentar</button>
+          </form>
+        ) : (
+          // Mensagem para usuários deslogados
+          <div className="comment-form">
+            <p>Você precisa estar logado para comentar.</p>
+          </div>
+        )}
+      </div>
     </div>
   );
 }
