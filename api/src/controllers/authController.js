@@ -3,7 +3,6 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 
 class AuthController {
-
   /**
    * @swagger
    * /auth/registrar:
@@ -12,35 +11,15 @@ class AuthController {
    *     tags:
    *       - Autenticação
    *     description: Cria uma nova conta de usuário no sistema.
-   *     requestBody:
-   *       required: true
-   *       content:
-   *         application/json:
-   *           schema:
-   *             type: object
-   *             properties:
-   *               nome:
-   *                 type: string
-   *               email:
-   *                 type: string
-   *               senha:
-   *                 type: string
-   *               cargo:
-   *                 type: string
-   *     responses:
-   *       201:
-   *         description: Usuário criado com sucesso
-   *       400:
-   *         description: Erro na requisição
-   *       500:
-   *         description: Erro interno do servidor
    */
   static async registrar(req, res, next) {
     try {
       const { nome, email, senha, cargo } = req.body;
 
       if (!nome || !email || !senha || !cargo) {
-        return res.status(400).json({ mensagem: "Todos os campos são obrigatórios." });
+        return res
+          .status(400)
+          .json({ mensagem: "Todos os campos são obrigatórios." });
       }
 
       const usuarioExistente = await usuario.findOne({ email });
@@ -48,10 +27,21 @@ class AuthController {
         return res.status(400).json({ mensagem: "E-mail já cadastrado." });
       }
 
-      const senhaHash = await bcrypt.hash(senha, 10);
-      const novoUsuario = await usuario.create({ nome, email, senha: senhaHash, cargo });
+      // 🔤 Normaliza o cargo para minúsculo
+      const cargoNormalizado = cargo.toLowerCase();
 
-      res.status(201).json({ mensagem: "Usuário criado com sucesso!", usuario: novoUsuario });
+      const senhaHash = await bcrypt.hash(senha, 10);
+      const novoUsuario = await usuario.create({
+        nome,
+        email,
+        senha: senhaHash,
+        cargo: cargoNormalizado,
+      });
+
+      res.status(201).json({
+        mensagem: "Usuário criado com sucesso!",
+        usuario: novoUsuario,
+      });
     } catch (error) {
       next(error);
     }
@@ -65,30 +55,14 @@ class AuthController {
    *     tags:
    *       - Autenticação
    *     description: Retorna um token JWT se as credenciais forem válidas.
-   *     requestBody:
-   *       required: true
-   *       content:
-   *         application/json:
-   *           schema:
-   *             type: object
-   *             properties:
-   *               email:
-   *                 type: string
-   *               senha:
-   *                 type: string
-   *     responses:
-   *       200:
-   *         description: Login realizado com sucesso
-   *       401:
-   *         description: Credenciais inválidas
-   *       500:
-   *         description: Erro interno do servidor
    */
   static async login(req, res, next) {
     try {
       const { email, senha } = req.body;
 
-      const usuarioEncontrado = await usuario.findOne({ email }).select('+cargo');
+      const usuarioEncontrado = await usuario
+        .findOne({ email })
+        .select("+cargo");
       if (!usuarioEncontrado) {
         return res.status(401).json({ mensagem: "Credenciais inválidas." });
       }
@@ -98,8 +72,15 @@ class AuthController {
         return res.status(401).json({ mensagem: "Credenciais inválidas." });
       }
 
+      // 🔤 Garante que o cargo no token também esteja minúsculo
+      const cargoNormalizado = usuarioEncontrado.cargo.toLowerCase();
+
       const token = jwt.sign(
-        { id: usuarioEncontrado._id, email: usuarioEncontrado.email },
+        {
+          id: usuarioEncontrado._id,
+          email: usuarioEncontrado.email,
+          cargo: cargoNormalizado,
+        },
         process.env.JWT_SECRET || "segredo",
         { expiresIn: "1h" }
       );
@@ -108,7 +89,7 @@ class AuthController {
         mensagem: "Login realizado com sucesso",
         token,
         nome: usuarioEncontrado.nome,
-        cargo: usuarioEncontrado.cargo
+        cargo: cargoNormalizado,
       });
     } catch (error) {
       next(error);

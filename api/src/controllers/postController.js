@@ -272,6 +272,133 @@ class PostController {
             next(error);
         }
     };
+
+    // =============== COMENTÁRIOS ===============
+    static async listarComentarios(req, res, next) {
+        try {
+            const postId = req.params.id;
+            const postEncontrado = await post.findById(postId);
+
+            if (!postEncontrado) {
+                return res.status(404).json({ message: "Post não encontrado." });
+            }
+
+            res.status(200).json(postEncontrado.comentarios);
+        } catch (error) {
+            next(error);
+        }
+    }
+
+    static async adicionarComentario(req, res, next) {
+        try {
+            const postId = req.params.id;
+            const { usuario, texto } = req.body;
+
+            if (!usuario || !texto) {
+                return res.status(400).json({ message: "Usuário e texto são obrigatórios." });
+            }
+
+            const postEncontrado = await post.findById(postId);
+            if (!postEncontrado) {
+                return res.status(404).json({ message: "Post não encontrado." });
+            }
+
+            const novoComentario = { usuario, texto, data: new Date() };
+            postEncontrado.comentarios.push(novoComentario);
+            await postEncontrado.save();
+
+            res.status(201).json(novoComentario);
+        } catch (error) {
+            next(error);
+        }
+    }
+
+    // ===================================================
+    // COMENTÁRIOS
+    // ===================================================
+
+    static async listarComentarios(req, res, next) {
+        try {
+            const { id } = req.params;
+            const postEncontrado = await post.findById(id);
+            if (!postEncontrado) return res.status(404).json({ message: "Post não encontrado." });
+            res.status(200).json(postEncontrado.comentarios);
+        } catch (error) {
+            next(error);
+        }
+    }
+
+    static async adicionarComentario(req, res, next) {
+        try {
+            const { id } = req.params;
+            const { usuario, texto } = req.body;
+            if (!usuario || !texto) return res.status(400).json({ message: "Usuário e texto são obrigatórios." });
+
+            const postEncontrado = await post.findById(id);
+            if (!postEncontrado) return res.status(404).json({ message: "Post não encontrado." });
+
+            const novoComentario = { usuario, texto, data: new Date() };
+            postEncontrado.comentarios.push(novoComentario);
+            await postEncontrado.save();
+
+            // retorna o último comentário (com o _id real do Mongoose)
+            const comentarioCriado = postEncontrado.comentarios[postEncontrado.comentarios.length - 1];
+            res.status(201).json(comentarioCriado);
+        } catch (error) {
+            next(error);
+        }
+    }
+
+    static async editarComentario(req, res, next) {
+        try {
+            const { postId, comentarioId } = req.params;
+            const { usuario, cargo, novoTexto } = req.body;
+
+            const postEncontrado = await post.findById(postId);
+            if (!postEncontrado) return res.status(404).json({ message: "Post não encontrado." });
+
+            const comentario = postEncontrado.comentarios.id(comentarioId);
+            if (!comentario) return res.status(404).json({ message: "Comentário não encontrado." });
+
+            if (comentario.usuario !== usuario) {
+                return res.status(403).json({ message: "Você só pode editar seus próprios comentários." });
+            }
+
+            comentario.texto = novoTexto;
+            comentario.data = new Date();
+            await postEncontrado.save();
+
+            res.status(200).json({ message: "Comentário atualizado", comentario });
+        } catch (error) {
+            next(error);
+        }
+    }
+
+    static async excluirComentario(req, res, next) {
+        try {
+            const { postId, comentarioId } = req.params;
+            const { usuario, cargo } = req.body;
+
+            const postEncontrado = await post.findById(postId);
+            if (!postEncontrado) return res.status(404).json({ message: "Post não encontrado." });
+
+            const comentario = postEncontrado.comentarios.id(comentarioId);
+            if (!comentario) return res.status(404).json({ message: "Comentário não encontrado." });
+
+            const isAutor = comentario.usuario === usuario;
+            const isProfessor = cargo === "professor";
+            if (!isAutor && !isProfessor) {
+                return res.status(403).json({ message: "Permissão negada para excluir este comentário." });
+            }
+
+            comentario.deleteOne();
+            await postEncontrado.save();
+
+            res.status(200).json({ message: "Comentário excluído com sucesso." });
+        } catch (error) {
+            next(error);
+        }
+    }
 }
 
 export default PostController;
