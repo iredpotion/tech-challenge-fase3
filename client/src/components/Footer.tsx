@@ -4,7 +4,7 @@ export default function Footer() {
 
   return (
     <footer className="main-footer">
-      <p>&copy; {currentYear} Tech-Challenge Fase 3. Todos os direitos reservados a Pedro Toni, Pedro Henrique, Gustavo Partica, Anderson, Wesley.</p>
+      <p>&copy; {currentYear} Tech-Challenge Fase 3. Todos os direitos reservados a Pedro Toni, Pedro Henrique, Gustavo, Rodrigo, Wesley.</p>
     </footer>
   );
 }
