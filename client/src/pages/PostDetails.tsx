@@ -115,70 +115,82 @@ export default function PostDetalhe() {
 
         <div className="comments-list">
           {comentarios.length > 0 ? (
-            comentarios.map((c) => (
-              <div key={c._id} className="comment-item">
-                <strong>{c.usuario}</strong>
+            comentarios.map((c) => {
+              const estaEditando = editando[c._id] !== undefined;
 
-                {editando[c._id] !== undefined ? (
-                  <>
-                    <textarea
-                      value={editando[c._id]}
-                      onChange={(e) =>
-                        setEditando((prev) => ({
-                          ...prev,
-                          [c._id]: e.target.value,
-                        }))
-                      }
-                    />
-                    <button onClick={() => salvarEdicao(c)}>Salvar</button>
-                    <button
-                      onClick={() =>
-                        setEditando((prev) => {
-                          const novo = { ...prev };
-                          delete novo[c._id];
-                          return novo;
-                        })
-                      }
-                    >
-                      Cancelar
-                    </button>
-                  </>
-                ) : (
-                  <p>{c.texto}</p>
-                )}
+              return (
+                <div key={c._id} className="comment-item">
+                  <strong>{c.usuario}</strong>
 
-                <small>Publicado em: {formatDate(c.data)}</small>
-
-                {user && (
-                  <div className="comment-actions">
-                    {/* Autor pode editar e excluir */}
-                    {user.nome === c.usuario && (
-                      <>
+                  {estaEditando ? (
+                    <>
+                      <textarea
+                        value={editando[c._id]}
+                        onChange={(e) =>
+                          setEditando((prev) => ({
+                            ...prev,
+                            [c._id]: e.target.value,
+                          }))
+                        }
+                      />
+                      <div className="comment-actions">
+                        <button onClick={() => salvarEdicao(c)}>Salvar</button>
                         <button
                           onClick={() =>
-                            setEditando((prev) => ({
-                              ...prev,
-                              [c._id]: c.texto,
-                            }))
+                            setEditando((prev) => {
+                              const novo = { ...prev };
+                              delete novo[c._id];
+                              return novo;
+                            })
                           }
                         >
-                          Editar
+                          Cancelar
                         </button>
-                        <button onClick={() => handleExcluirComentario(c)}>
-                          Excluir
-                        </button>
-                      </>
-                    )}
-                    {/* Professor pode excluir qualquer comentário */}
-                    {user.cargo === "professor" && user.nome !== c.usuario && (
-                      <button onClick={() => handleExcluirComentario(c)}>
-                        Excluir
-                      </button>
-                    )}
-                  </div>
-                )}
-              </div>
-            ))
+                      </div>
+                    </>
+                  ) : (
+                    <>
+                      <p>{c.texto}</p>
+                      <small>Publicado em: {formatDate(c.data)}</small>
+
+                      {user && (
+                        <div className="comment-actions">
+                          {/* Autor pode editar e excluir */}
+                          {user.nome === c.usuario && (
+                            <>
+                              <button
+                                onClick={() =>
+                                  setEditando((prev) => ({
+                                    ...prev,
+                                    [c._id]: c.texto,
+                                  }))
+                                }
+                              >
+                                Editar
+                              </button>
+                              <button
+                                onClick={() => handleExcluirComentario(c)}
+                              >
+                                Excluir
+                              </button>
+                            </>
+                          )}
+                          {/* Professor pode excluir qualquer comentário */}
+                          {user.cargo === "professor" &&
+                            user.nome !== c.usuario && (
+                              <button
+                                onClick={() => handleExcluirComentario(c)}
+                              >
+                                Excluir
+                              </button>
+                            )}
+                        </div>
+                      )}
+                    </>
+                  )}
+                </div>
+              );
+            })
           ) : (
             <p>Seja o primeiro a comentar!</p>
           )}
