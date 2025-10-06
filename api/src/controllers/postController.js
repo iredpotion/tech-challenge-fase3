@@ -273,50 +273,25 @@ class PostController {
         }
     };
 
-    // =============== COMENTÁRIOS ===============
-    static async listarComentarios(req, res, next) {
-        try {
-            const postId = req.params.id;
-            const postEncontrado = await post.findById(postId);
-
-            if (!postEncontrado) {
-                return res.status(404).json({ message: "Post não encontrado." });
-            }
-
-            res.status(200).json(postEncontrado.comentarios);
-        } catch (error) {
-            next(error);
-        }
-    }
-
-    static async adicionarComentario(req, res, next) {
-        try {
-            const postId = req.params.id;
-            const { usuario, texto } = req.body;
-
-            if (!usuario || !texto) {
-                return res.status(400).json({ message: "Usuário e texto são obrigatórios." });
-            }
-
-            const postEncontrado = await post.findById(postId);
-            if (!postEncontrado) {
-                return res.status(404).json({ message: "Post não encontrado." });
-            }
-
-            const novoComentario = { usuario, texto, data: new Date() };
-            postEncontrado.comentarios.push(novoComentario);
-            await postEncontrado.save();
-
-            res.status(201).json(novoComentario);
-        } catch (error) {
-            next(error);
-        }
-    }
-
-    // ===================================================
-    // COMENTÁRIOS
-    // ===================================================
-
+    /**
+     * @swagger
+     * /posts/{id}/comentarios:
+     *   get:
+     *     summary: Lista todos os comentários de um post
+     *     tags:
+     *       - Comentários
+     *     parameters:
+     *       - name: id
+     *         in: path
+     *         required: true
+     *         schema:
+     *           type: string
+     *     responses:
+     *       200:
+     *         description: Lista de comentários
+     *       404:
+     *         description: Post não encontrado
+     */
     static async listarComentarios(req, res, next) {
         try {
             const { id } = req.params;
@@ -328,6 +303,34 @@ class PostController {
         }
     }
 
+    /**
+     * @swagger
+     * /posts/{id}/comentarios:
+     *   post:
+     *     summary: Adiciona um comentário a um post
+     *     tags:
+     *       - Comentários
+     *     parameters:
+     *       - name: id
+     *         in: path
+     *         required: true
+     *         schema:
+     *           type: string
+     *     requestBody:
+     *       required: true
+     *       content:
+     *         application/json:
+     *           example:
+     *             usuario: "Carlos"
+     *             texto: "Novo comentário"
+     *     responses:
+     *       201:
+     *         description: Comentário criado com sucesso
+     *       400:
+     *         description: Usuário ou texto ausentes
+     *       404:
+     *         description: Post não encontrado
+     */
     static async adicionarComentario(req, res, next) {
         try {
             const { id } = req.params;
@@ -349,6 +352,14 @@ class PostController {
         }
     }
 
+    /**
+     * @swagger
+     * /posts/{postId}/comentarios/{comentarioId}:
+     *   put:
+     *     summary: Edita um comentário específico
+     *     tags:
+     *       - Comentários
+     */
     static async editarComentario(req, res, next) {
         try {
             const { postId, comentarioId } = req.params;
@@ -374,6 +385,14 @@ class PostController {
         }
     }
 
+    /**
+     * @swagger
+     * /posts/{postId}/comentarios/{comentarioId}:
+     *   delete:
+     *     summary: Exclui um comentário específico
+     *     tags:
+     *       - Comentários
+     */
     static async excluirComentario(req, res, next) {
         try {
             const { postId, comentarioId } = req.params;

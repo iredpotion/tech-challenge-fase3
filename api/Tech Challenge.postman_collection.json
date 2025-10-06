@@ -1,7 +1,7 @@
 {
 	"info": {
-		"_postman_id": "8e5c1d81-c0a0-4093-9eb4-f8ab446e5934",
-		"name": "Tech Challenge",
+		"_postman_id": "c1d7f8e2-1234-4567-8910-abcdef123456",
+		"name": "Tech Challenge API",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
 		"_exporter_id": "27426680"
 	},
@@ -38,19 +38,20 @@
 					],
 					"port": "3000",
 					"path": [
-						"posts/professor"
+						"posts",
+						"professor"
 					]
 				}
 			},
 			"response": []
 		},
 		{
-			"name": "Listar por ID",
+			"name": "Listar Post por ID",
 			"request": {
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "http://localhost:3000/posts/6837d317e8161ba3e85ad8bd",
+					"raw": "http://localhost:3000/posts/:id",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -58,25 +59,25 @@
 					"port": "3000",
 					"path": [
 						"posts",
-						"6837d317e8161ba3e85ad8bd"
+						":id"
 					]
 				}
 			},
 			"response": []
 		},
 		{
-			"name": "Criar post",
+			"name": "Criar Post",
 			"request": {
 				"method": "POST",
-				"header": [],
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"titulo\": \"Teste \",\r\n    \"descricao\": \"decima aula\",\r\n    \"autor\": \"Claudio\",\r\n    \"postAtivo\": true\r\n}",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
+					"raw": "{\n  \"titulo\": \"Teste Post\",\n  \"descricao\": \"Descrição do teste\",\n  \"autor\": \"Claudio\",\n  \"postAtivo\": true\n}"
 				},
 				"url": {
 					"raw": "http://localhost:3000/posts",
@@ -93,21 +94,21 @@
 			"response": []
 		},
 		{
-			"name": "Atualizar post",
+			"name": "Atualizar Post",
 			"request": {
 				"method": "PUT",
-				"header": [],
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"titulo\": \"Aulas de Nest \"\r\n\r\n}",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
+					"raw": "{\n  \"titulo\": \"Post Atualizado\"\n}"
 				},
 				"url": {
-					"raw": "http://localhost:3000/posts/6837d317e8161ba3e85ad8bd",
+					"raw": "http://localhost:3000/posts/:id",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -115,19 +116,19 @@
 					"port": "3000",
 					"path": [
 						"posts",
-						"6837d317e8161ba3e85ad8bd"
+						":id"
 					]
 				}
 			},
 			"response": []
 		},
 		{
-			"name": "Deletar post",
+			"name": "Deletar Post",
 			"request": {
 				"method": "DELETE",
 				"header": [],
 				"url": {
-					"raw": "http://localhost:3000/posts/6837d317e8161ba3e85ad8bd",
+					"raw": "http://localhost:3000/posts/:id",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -135,14 +136,14 @@
 					"port": "3000",
 					"path": [
 						"posts",
-						"6837d317e8161ba3e85ad8bd"
+						":id"
 					]
 				}
 			},
 			"response": []
 		},
 		{
-			"name": "Lista por query",
+			"name": "Listar Posts por Query",
 			"request": {
 				"method": "GET",
 				"header": [],
@@ -162,6 +163,119 @@
 							"key": "descricao",
 							"value": "terceira"
 						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Listar Comentários",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/posts/:id/comentarios",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"posts",
+						":id",
+						"comentarios"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Adicionar Comentário",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"usuario\": \"Carlos\",\n  \"texto\": \"Comentário de teste\"\n}"
+				},
+				"url": {
+					"raw": "http://localhost:3000/posts/:id/comentarios",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"posts",
+						":id",
+						"comentarios"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Editar Comentário",
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"usuario\": \"Carlos\",\n  \"novoTexto\": \"Comentário atualizado\"\n}"
+				},
+				"url": {
+					"raw": "http://localhost:3000/posts/:postId/comentarios/:comentarioId",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"posts",
+						":postId",
+						"comentarios",
+						":comentarioId"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Deletar Comentário",
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"usuario\": \"Carlos\",\n  \"cargo\": \"professor\"\n}"
+				},
+				"url": {
+					"raw": "http://localhost:3000/posts/:postId/comentarios/:comentarioId",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"posts",
+						":postId",
+						"comentarios",
+						":comentarioId"
 					]
 				}
 			},
