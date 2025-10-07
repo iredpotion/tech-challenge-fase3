@@ -1,336 +1,217 @@
-# Tech Challenge Fase 3
+# 🧩 Tech Challenge Fase 3 — Full Stack (Posts, Comentários e Autenticação)
 
-O projeto **tech-challenge-fase3** é uma aplicação **full-stack** composta por dois módulos principais: - **Backend (`api/`)** --- responsável pela camada de negócio, regras de autenticação, persistência e API REST. - **Frontend (`client/`)** --- responsável pela interface React, comunicação com a API e experiência do usuário.
+O projeto **tech-challenge-fase3** é uma aplicação **full-stack** composta por dois módulos principais:
 
-API RESTful para **gestão de postagens em ambiente educacional**, construída com **Node.js**, **Express**, **MongoDB** (containerizado via Docker) e **React**. Possui documentação automática via **Swagger OpenAPI 3** e pipelines de CI/CD com **GitHub Actions**. Os testes garantem pelo menos **20% de cobertura de código** para cenários críticos (criar, editar, excluir posts).
+- **Backend (`api/`)** — responsável pela lógica de negócios, autenticação, persistência e API REST.
+- **Frontend (`client/`)** — interface desenvolvida em **React + Vite**, integrada ao backend via Axios.
 
-A arquitetura segue um padrão **MVC (Model--View--Controller)** no backend e um **SPA (Single Page Application)** no frontend, integrados por requisições HTTP via Axios.
+A API gerencia **postagens e comentários em ambiente educacional**, com autenticação via **JWT** e documentação automática gerada com **Swagger (OpenAPI 3)**.
 
-## Tecnologias Utilizadas
+---
 
-- **Node.js** + **Express** — back-end e roteamento
-- **MongoDB** — persistência de dados dentro de container Docker
-- **Docker** — ambientes replicáveis e isolados
-- **JWT** — autenticação e autorização
-- **GitHub Actions** — Workflows de CI/CD para lint, testes e deploy
-- **Swagger (OpenAPI 3)** — Documentação interativa da API
-- **Jest** — Testes unitários com cobertura mínima de 20%
-- **React** — Front-end e componentização
+## ⚙️ Tecnologias Utilizadas
 
-## Front-end
+- **Node.js + Express** — backend e roteamento
+- **MongoDB + Mongoose** — persistência de dados (container Docker)
+- **JWT** — autenticação segura de usuários
+- **Bcrypt** — criptografia de senhas
+- **Docker & Docker Compose** — ambientes isolados
+- **Swagger** — documentação interativa da API
+- **Jest + Supertest** — testes automatizados das rotas
+- **React + Vite + TypeScript** — frontend SPA
+- **Axios + Context API + React Router DOM** — integração e navegação
 
-A interface do sistema foi desenvolvida em React.js, priorizando usabilidade e integração fluida com a API RESTful.
-O front-end permite que usuários (alunos e professores) interajam de forma intuitiva com as postagens educacionais, oferecendo recursos de listagem, criação, edição e exclusão de posts.
+---
 
-### Fluxo principal
+## 🧱 Arquitetura do Sistema
 
-1.  Login → AuthController → JWT.
-2.  Frontend envia requisições autenticadas.
-3.  PostController → CRUD de posts e comentários.
-4.  MongoDB armazena users, posts e comentários.
-   
-### Estrutura de pastas e arquivos
+A arquitetura segue o padrão **MVC (Model–View–Controller)** no backend e **SPA (Single Page Application)** no frontend.
 
 ```bash
- tech-challenge-fase3/
-    ├── api/              # Camada de backend (Node.js + Express + MongoDB)
-    │   ├── src/
-    │   │   ├── config/
-    │   │   ├── controllers/
-    │   │   ├── models/
-    │   │   ├── routes/
-    │   │   └── ...
-    │   ├── docker-compose.yml
-    │   ├── Dockerfile
-    │   └── server.js / app.js
-    └── client/           # Camada de frontend (React + TypeScript + Vite)
-        ├── src/
-        │   ├── components/
-        │   ├── context/
-        │   ├── pages/
-        │   ├── routes/
-        │   ├── services/
-        │   ├── App.tsx
-        │   ├── App.css
-        │   └── main.tsx
-        └── public/
-
+tech-challenge-fase3/
+├── api/              # Camada de backend (Node.js + Express + MongoDB)
+│   ├── src/
+│   │   ├── config/
+│   │   ├── controllers/
+│   │   ├── models/
+│   │   ├── routes/
+│   │   ├── swagger.js
+│   │   └── ...
+│   ├── docker-compose.yml
+│   ├── Dockerfile
+│   └── server.js
+└── client/           # Frontend (React + Vite + TypeScript)
+    ├── src/
+    │   ├── components/
+    │   ├── context/
+    │   ├── pages/
+    │   ├── routes/
+    │   ├── services/
+    │   ├── App.tsx
+    │   └── main.tsx
+    └── public/
 ```
 
-### Fluxo de navegação do usuário → [Userflow](https://www.figma.com/design/lrChXqUIYpD93mzzyEWeHU/TechChallenge---Workflow?node-id=0-1&t=0oAD4dfNQS5L79Je-1)
+---
 
-### Exemplo de Navegação
+## 🧠 Fluxo Principal
 
-![Demonstração](https://github.com/user-attachments/assets/3062b4d5-52e5-4082-a15b-f18bb5aa8927)
+1. Usuário realiza login via `AuthController` e recebe **token JWT**.
+2. Frontend envia requisições autenticadas para a API.
+3. **PostController** gerencia o CRUD de **posts e comentários**.
+4. Banco **MongoDB** armazena usuários, posts e comentários.
 
-### Regras de Comentários
+---
 
--   Autores podem editar/excluir os próprios.
--   Professores podem excluir qualquer, editar só os próprios.
+## 🌐 Endpoints da API
 
-### Stack Tecnológica
+| Grupo | Método | Endpoint | Descrição |
+|--------|---------|-----------|------------|
+| **Autenticação** | POST | `/auth/registrar` | Registra novo usuário |
+| **Autenticação** | POST | `/auth/login` | Login e geração de token JWT |
+| **Posts** | GET | `/posts/busca` | Lista posts com filtro |
+| **Posts** | GET | `/posts` | Lista posts ativos |
+| **Posts** | GET | `/posts/professor` | Lista todos os posts (modo professor) |
+| **Posts** | GET | `/posts/{id}` | Busca post por ID |
+| **Posts** | POST | `/posts` | Cria novo post |
+| **Posts** | PUT | `/posts/{id}` | Atualiza post existente |
+| **Posts** | DELETE | `/posts/{id}` | Exclui post |
+| **Comentários** | GET | `/posts/{id}/comentarios` | Lista comentários de um post |
+| **Comentários** | POST | `/posts/{id}/comentarios` | Adiciona comentário |
+| **Comentários** | PUT | `/posts/{postId}/comentarios/{comentarioId}` | Edita comentário existente |
+| **Comentários** | DELETE | `/posts/{postId}/comentarios/{comentarioId}` | Exclui comentário |
 
--   React + TypeScript + Vite
--   Axios
--   React Router DOM
--   CSS puro
--   Context API
+---
 
-## Endpoints
+## 🔐 Rotas de Autenticação
 
-```
-  ---------------------------------------------------------------------------------------------
-  Operação                   Método                Endpoint
-  -------------------------- --------------------- --------------------------------------------
-  Listar Posts               GET                   `/posts`
-
-  Criar Post                 POST                  `/posts`
-
-  Editar Post                PUT                   `/posts/:id`
-
-  Excluir Post               DELETE                `/posts/:id`
-
-  Listar Comentários         GET                   `/posts/:id/comentarios`
-
-  Adicionar Comentário       POST                  `/posts/:id/comentarios`
-
-  Editar Comentário          PUT                   `/posts/:postId/comentarios/:comentarioId`
-
-  Excluir Comentário         DELETE                `/posts/:postId/comentarios/:comentarioId`
-  ---------------------------------------------------------------------------------------------
-```
-
-### 1. **Listar Posts com Filtro**
-
-- **Rota:** `GET /posts/busca`
-- **Descrição:** Retorna posts filtrados por `titulo` e/ou `descricao` (case-insensitive).
-- **Parâmetros de Query:**
-    - `titulo` (opcional): Filtro pelo título.
-    - `descricao` (opcional): Filtro pela descrição.
+### 1. Registrar Novo Usuário
+- **Rota:** `POST /auth/registrar`
+- **Body:**
+  ```json
+  {
+    "nome": "string",
+    "email": "string",
+    "senha": "string",
+    "cargo": "string"
+  }
+  ```
 - **Respostas:**
-    - `200 OK`: Lista de posts filtrados.
-    - `500 Internal Server Error`: Erro ao buscar posts.
+  - `201`: Usuário criado
+  - `400`: Campos obrigatórios ausentes ou e-mail já cadastrado
+  - `500`: Erro interno
 
-
-
-### 2. **Listar Posts Ativos**
-
-- **Rota:** `GET /posts`
-- **Descrição:** Retorna apenas os posts ativos (`postAtivo: true`).
+### 2. Login de Usuário
+- **Rota:** `POST /auth/login`
+- **Body:**
+  ```json
+  {
+    "email": "string",
+    "senha": "string"
+  }
+  ```
 - **Respostas:**
-    - `200 OK`: Lista de posts ativos.
-    - `500 Internal Server Error`: Erro ao listar posts.
+  - `200`: Login realizado com sucesso e token JWT retornado
+  - `401`: Credenciais inválidas
+  - `500`: Erro interno
 
+---
 
+## 💬 Rotas de Comentários
 
-### 3. **Listar Todos os Posts (Modo Professor)**
+### 1. Listar Comentários
+`GET /posts/{id}/comentarios`
 
-- **Rota:** `GET /posts/professor`
-- **Descrição:** Retorna todos os posts, inclusive os inativos.
-- **Respostas:**
-    - `200 OK`: Lista completa de posts.
-    - `500 Internal Server Error`: Erro ao buscar os posts.
+### 2. Adicionar Comentário
+`POST /posts/{id}/comentarios`
 
+### 3. Editar Comentário
+`PUT /posts/{postId}/comentarios/{comentarioId}`
 
+### 4. Excluir Comentário
+`DELETE /posts/{postId}/comentarios/{comentarioId}`
 
-### 4. **Buscar Post por ID**
+> **Regras:**
+> - Usuários podem editar e excluir apenas os próprios comentários.
+> - Professores podem excluir qualquer comentário.
 
-- **Rota:** `GET /posts/{id}`
-- **Descrição:** Retorna um post específico com base no ID.
-- **Parâmetros de Rota:**
-    - `id` (obrigatório): ID do post.
-- **Respostas:**
-    - `200 OK`: Post encontrado.
-    - `404 Not Found`: ID não localizado.
-    - `500 Internal Server Error`: Erro ao buscar o post.
+---
 
+## 🧭 Como Executar o Projeto
 
-
-### 5. **Criar Novo Post**
-
-- **Rota:** `POST /posts`
-- **Descrição:** Cria um novo post. Campos de data (`dataCriacao` e `dataAtualizacao`) **não são permitidos no corpo da requisição**.
-- **Body JSON:**
-    
-    ```json
-    {
-      "titulo": "string",
-      "descricao": "string",
-      "autor": "string"
-    }
-    ```
-    
-- **Respostas:**
-    - `201 Created`: Post criado com sucesso.
-    - `500 Internal Server Error`: Erro ou tentativa de envio de campos de data.
-
-
-
-### 6. **Atualizar Post por ID**
-
-- **Rota:** `PUT /posts/{id}`
-- **Descrição:** Atualiza campos de um post existente. Alterações em `dataCriacao` e `dataAtualizacao` **não são permitidas**.
-- **Parâmetros de Rota:**
-    - `id` (obrigatório): ID do post.
-- **Body JSON:**
-    
-    ```json
-    {
-      "titulo": "string",
-      "descricao": "string",
-      "conteudo": "string"
-    }
-    ```
-    
-- **Respostas:**
-    - `200 OK`: Post atualizado.
-    - `500 Internal Server Error`: Erro ao atualizar ou tentativa de alterar datas.
-
-
-
-### 7. **Excluir Post por ID**
-
-- **Rota:** `DELETE /posts/{id}`
-- **Descrição:** Remove um post do banco de dados.
-- **Parâmetros de Rota:**
-    - `id` (obrigatório): ID do post.
-- **Respostas:**
-    - `200 OK`: Post excluído com sucesso.
-    - `500 Internal Server Error`: Erro ao excluir o post.
-
-
-
-## Observações Técnicas
-
-- As datas são sempre formatadas para o padrão `pt-BR` (dd/mm/aaaa) antes de retornar ao cliente.
-- O sistema é protegido contra alterações ou criações com `dataCriacao` e `dataAtualizacao`, garantindo a integridade dessas informações.
-- Filtros de busca utilizam expressões regulares (`$regex`) com case insensitive (`$options: "i"`).
-
-
-
-## OpenAPI (Swagger)
-
-
-<img width="1900" height="861" alt="image" src="https://github.com/user-attachments/assets/5eee48a4-8d1d-467a-8419-3c183e96f835" />
-<img width="1897" height="560" alt="image" src="https://github.com/user-attachments/assets/8b05bdf3-5ecd-498e-a7c0-1f6b1224d724" />
-
-
-
-
-
-## Docker & MongoDB
-
-Arquivo `docker-compose.yml`:
-
-```yaml
-services:
-  mongo:
-    image: mongo:5.0
-    container_name: mongodb
-    ports:
-      - "27017:27017"
-    volumes:
-      - mongo_data:/data/db
-
-  app:
-    build: .
-    container_name: node_app2
-    ports:
-      - "3000:3000"
-    volumes:
-      - .:/app
-    working_dir: /app
-    environment:
-      - MONGO_URI={$DB_CONNECTION_STRING}
-    depends_on:
-      - mongo
-    env_file:
-      - .env
-
-volumes:
-  mongo_data:
-  
-```
-
-Para iniciar o ambiente:
-
-```bash
-docker-compose up -d
-```
-
-## Testes e Qualidade
-
-- **Jest** com cobertura mínima de 20% focando nos controladores e lógica crítica.
-- **ESLint** para padronização de código.
-- Workflows do GitHub Actions para:
-    - `lint`
-    - `test`
-    - `build`
-    - **deploy** (de acordo com ambiente)
-
-
-
-## Como Executar a Aplicação
-
-### 1. Pré-requisitos:
-Node.js: A aplicação depende do Node.js para funcionar, mas com Docker, você não precisa instalar o Node localmente.
-
-Docker: Usado para containerizar a aplicação.
-
-Docker Compose: Usado para orquestrar a aplicação e serviços relacionados.
-
-### 2. Configuração e Inicialização:
-- Clone o repositório:
-
+### 1️⃣ Clonar o repositório
 ```bash
 git clone <url_do_repositorio>
-cd <diretorio_do_repositorio>
-npm install
+cd tech-challenge-fase3
 ```
 
-- Subir o banco de dados com Docker Compose:
-Esse comando vai construir as imagens, instalar as dependências automaticamente e iniciar os containers.
-bash
-```
+### 2️⃣ Subir o backend (API + MongoDB)
+```bash
 cd api/
-docker-compose up -d
+docker-compose up -d --build
 ```
-- O -d roda os containers em segundo plano (modo "detached").
-- Não é necessário rodar npm install, pois o Dockerfile já está configurado para instalar as dependências automaticamente durante a criação da imagem.
 
-- Subir a aplicação com React & Vite (acesse em outro terminal):
-```
+### 3️⃣ Subir o frontend React + Vite
+```bash
 cd client/
+npm install
 npm run dev
-```  
-Esse comando vai renderizar as paginas frontend.
-
-### 3. Acessando a Aplicação:
-- A aplicação estará disponível no endereço disponibilizado pelo React + Vite (http://localhost:5173/).
-- Abra o navegador e acesse http://localhost:3000/api-docs, para acessar a documentação da api!
-  
-### 4. Execução dos Testes:
-Caso queira rodar os testes dentro do container, você pode executar o seguinte comando:
-
-bash
-```
-docker-compose exec <nome_do_servico> npm test
 ```
 
-Onde:
+- Acesse o frontend em: **http://localhost:5173**
+- Acesse a API em: **http://localhost:3000**
+- Acesse a documentação Swagger: **http://localhost:3000/api-docs**
 
-<nome_do_servico> é o nome do serviço configurado no docker-compose.yml. Por exemplo, se o nome do serviço for app, o comando seria docker-compose exec app npm test.
+---
 
-### 5. Parar os Containers:
-Se precisar parar os containers, use:
+## 🧪 Testes e Qualidade
 
-bash
+- **Jest + Supertest:** testes unitários e de integração das rotas.
+- **Cobertura mínima:** 20%
+- **ESLint:** padronização de código
+
+Rodar os testes:
+```bash
+npm test
 ```
-docker-compose down
+
+Rodar com relatório de cobertura:
+```bash
+npx jest --coverage
 ```
 
-## Recursos Úteis
+---
 
-- **Dev.to**: *Documenting Node.js API using Swagger* — configuração manual com `swagger-jsdoc`, acesso ao `/docs` e `/docs.json` ([dev.to](https://dev.to/desmondsanctity/documenting-nodejs-api-using-swagger-4klp?utm_source=chatgpt.com))
-- **Robin Raju**: uso do Swagger Editor para validações e refino manual da spec YAML ([robinraju.io](https://robinraju.io/documenting-rest-apis-using-swagger/?utm_source=chatgpt.com))
+## 🧹 Limpar o Banco de Dados
 
+Para apagar todos os dados do MongoDB via Docker:
+```bash
+docker exec -it mongo_db mongosh --eval 'use posts; db.dropDatabase(); print("Banco apagado!");'
+```
+
+---
+
+## 🧰 Recursos Úteis
+
+- **Swagger UI:** Documentação interativa (`/api-docs`)
+- **Axios:** Comunicação entre frontend e backend
+- **Context API:** Armazenamento global do usuário logado
+- **React Router DOM:** Navegação SPA
+
+---
+
+## 🧩 Stack Resumida
+
+| Camada | Tecnologia |
+|--------|-------------|
+| Backend | Node.js + Express |
+| Banco | MongoDB + Mongoose |
+| Autenticação | JWT + Bcrypt |
+| Frontend | React + Vite + TypeScript |
+| Testes | Jest + Supertest |
+| Infra | Docker + GitHub Actions |
+
+---
+ 
+🚀 **Tech Challenge — Fase 3 (Full Stack Development)**  
+🗓️ **2025**
