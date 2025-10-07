@@ -1,20 +1,104 @@
-# API - Tech Challenge Fase 2
+# Tech Challenge Fase 3
 
-API RESTful para **gestão de postagens em ambiente educacional**, construída com **Node.js**, **Express** e **MongoDB** (containerizado via Docker). Possui documentação automática via **Swagger OpenAPI 3** e pipelines de CI/CD com **GitHub Actions**. Os testes garantem pelo menos **20% de cobertura de código** para cenários críticos (criar, editar, excluir posts).
+O projeto **tech-challenge-fase3** é uma aplicação **full-stack** composta por dois módulos principais: - **Backend (`api/`)** --- responsável pela camada de negócio, regras de autenticação, persistência e API REST. - **Frontend (`client/`)** --- responsável pela interface React, comunicação com a API e experiência do usuário.
 
+API RESTful para **gestão de postagens em ambiente educacional**, construída com **Node.js**, **Express**, **MongoDB** (containerizado via Docker) e **React**. Possui documentação automática via **Swagger OpenAPI 3** e pipelines de CI/CD com **GitHub Actions**. Os testes garantem pelo menos **20% de cobertura de código** para cenários críticos (criar, editar, excluir posts).
+
+A arquitetura segue um padrão **MVC (Model--View--Controller)** no backend e um **SPA (Single Page Application)** no frontend, integrados por requisições HTTP via Axios.
 
 ## Tecnologias Utilizadas
 
 - **Node.js** + **Express** — back-end e roteamento
 - **MongoDB** — persistência de dados dentro de container Docker
 - **Docker** — ambientes replicáveis e isolados
+- **JWT** — autenticação e autorização
 - **GitHub Actions** — Workflows de CI/CD para lint, testes e deploy
 - **Swagger (OpenAPI 3)** — Documentação interativa da API
 - **Jest** — Testes unitários com cobertura mínima de 20%
+- **React** — Front-end e componentização
 
+## Front-end
 
+A interface do sistema foi desenvolvida em React.js, priorizando usabilidade e integração fluida com a API RESTful.
+O front-end permite que usuários (alunos e professores) interajam de forma intuitiva com as postagens educacionais, oferecendo recursos de listagem, criação, edição e exclusão de posts.
+
+### Fluxo principal
+
+1.  Login → AuthController → JWT.
+2.  Frontend envia requisições autenticadas.
+3.  PostController → CRUD de posts e comentários.
+4.  MongoDB armazena users, posts e comentários.
+   
+### Estrutura de pastas e arquivos
+
+```bash
+ tech-challenge-fase3/
+    ├── api/              # Camada de backend (Node.js + Express + MongoDB)
+    │   ├── src/
+    │   │   ├── config/
+    │   │   ├── controllers/
+    │   │   ├── models/
+    │   │   ├── routes/
+    │   │   └── ...
+    │   ├── docker-compose.yml
+    │   ├── Dockerfile
+    │   └── server.js / app.js
+    └── client/           # Camada de frontend (React + TypeScript + Vite)
+        ├── src/
+        │   ├── components/
+        │   ├── context/
+        │   ├── pages/
+        │   ├── routes/
+        │   ├── services/
+        │   ├── App.tsx
+        │   ├── App.css
+        │   └── main.tsx
+        └── public/
+
+```
+
+### Fluxo de navegação do usuário → [Userflow](https://www.figma.com/design/lrChXqUIYpD93mzzyEWeHU/TechChallenge---Workflow?node-id=0-1&t=0oAD4dfNQS5L79Je-1)
+
+### Exemplo de Navegação
+
+![Demonstração](https://github.com/user-attachments/assets/3062b4d5-52e5-4082-a15b-f18bb5aa8927)
+
+### Regras de Comentários
+
+-   Autores podem editar/excluir os próprios.
+-   Professores podem excluir qualquer, editar só os próprios.
+
+### Stack Tecnológica
+
+-   React + TypeScript + Vite
+-   Axios
+-   React Router DOM
+-   CSS puro
+-   Context API
 
 ## Endpoints
+
+```
+  ---------------------------------------------------------------------------------------------
+  Operação                   Método                Endpoint
+  -------------------------- --------------------- --------------------------------------------
+  Listar Posts               GET                   `/posts`
+
+  Criar Post                 POST                  `/posts`
+
+  Editar Post                PUT                   `/posts/:id`
+
+  Excluir Post               DELETE                `/posts/:id`
+
+  Listar Comentários         GET                   `/posts/:id/comentarios`
+
+  Adicionar Comentário       POST                  `/posts/:id/comentarios`
+
+  Editar Comentário          PUT                   `/posts/:postId/comentarios/:comentarioId`
+
+  Excluir Comentário         DELETE                `/posts/:postId/comentarios/:comentarioId`
+  ---------------------------------------------------------------------------------------------
+```
 
 ### 1. **Listar Posts com Filtro**
 
@@ -136,12 +220,10 @@ API RESTful para **gestão de postagens em ambiente educacional**, construída c
 Arquivo `docker-compose.yml`:
 
 ```yaml
-version: '3.8'
-
 services:
   mongo:
     image: mongo:5.0
-    container_name: mongo_db_projeto1
+    container_name: mongodb
     ports:
       - "27017:27017"
     volumes:
@@ -149,13 +231,14 @@ services:
 
   app:
     build: .
-    container_name: node_app_projeto1
+    container_name: node_app2
     ports:
       - "3000:3000"
     volumes:
       - .:/app
+    working_dir: /app
     environment:
-      - MONGO_URI=mongodb://mongo:27017/posts
+      - MONGO_URI={$DB_CONNECTION_STRING}
     depends_on:
       - mongo
     env_file:
@@ -171,8 +254,6 @@ Para iniciar o ambiente:
 ```bash
 docker-compose up -d
 ```
-
-
 
 ## Testes e Qualidade
 
