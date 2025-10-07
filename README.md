@@ -211,7 +211,10 @@ O front-end permite que usuários (alunos e professores) interajam de forma intu
 ## OpenAPI (Swagger)
 
 
-<img width="862" height="643" alt="image" src="https://github.com/user-attachments/assets/b9495ecc-9ff5-4f5a-9b55-8d7825865429" />
+<img width="1900" height="861" alt="image" src="https://github.com/user-attachments/assets/5eee48a4-8d1d-467a-8419-3c183e96f835" />
+<img width="1897" height="560" alt="image" src="https://github.com/user-attachments/assets/8b05bdf3-5ecd-498e-a7c0-1f6b1224d724" />
+
+
 
 
 
@@ -282,21 +285,30 @@ Docker Compose: Usado para orquestrar a aplicação e serviços relacionados.
 ```bash
 git clone <url_do_repositorio>
 cd <diretorio_do_repositorio>
+npm install
 ```
 
-- Subir a aplicação com Docker Compose:
+- Subir o banco de dados com Docker Compose:
 Esse comando vai construir as imagens, instalar as dependências automaticamente e iniciar os containers.
 bash
 ```
+cd api/
 docker-compose up -d
 ```
 - O -d roda os containers em segundo plano (modo "detached").
 - Não é necessário rodar npm install, pois o Dockerfile já está configurado para instalar as dependências automaticamente durante a criação da imagem.
 
-### 3. Acessando a Aplicação:
-- A aplicação estará disponível no endereço configurado no docker-compose.yml (localhost:3000).
-- Abra o navegador e acesse http://localhost:3000/api-docs, onde <porta> é a porta configurada na sua aplicação.
+- Subir a aplicação com React & Vite (acesse em outro terminal):
+```
+cd client/
+npm run dev
+```  
+Esse comando vai renderizar as paginas frontend.
 
+### 3. Acessando a Aplicação:
+- A aplicação estará disponível no endereço disponibilizado pelo React + Vite (http://localhost:5173/).
+- Abra o navegador e acesse http://localhost:3000/api-docs, para acessar a documentação da api!
+  
 ### 4. Execução dos Testes:
 Caso queira rodar os testes dentro do container, você pode executar o seguinte comando:
 
